@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		598666661BCCB3D9005E7FD3 /* flushChromeHosts.applescript in Sources */ = {isa = PBXBuildFile; fileRef = 598666651BCCB3D9005E7FD3 /* flushChromeHosts.applescript */; settings = {ASSET_TAGS = (); }; };
+		598666671BCCC3DE005E7FD3 /* flushChromeHosts.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 598666651BCCB3D9005E7FD3 /* flushChromeHosts.applescript */; };
 		59C270C21BC66961009C3B13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C270C11BC66961009C3B13 /* AppDelegate.swift */; };
 		59C270C41BC66961009C3B13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C270C31BC66961009C3B13 /* ViewController.swift */; };
 		59C270C61BC66961009C3B13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59C270C51BC66961009C3B13 /* Assets.xcassets */; };
@@ -14,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		598666651BCCB3D9005E7FD3 /* flushChromeHosts.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; path = flushChromeHosts.applescript; sourceTree = "<group>"; };
 		59C270BE1BC66961009C3B13 /* Hosts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hosts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		59C270C11BC66961009C3B13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		59C270C31BC66961009C3B13 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 				59C270C51BC66961009C3B13 /* Assets.xcassets */,
 				59C270C71BC66961009C3B13 /* Main.storyboard */,
 				59C270CA1BC66961009C3B13 /* Info.plist */,
+				598666651BCCB3D9005E7FD3 /* flushChromeHosts.applescript */,
 			);
 			path = Hosts;
 			sourceTree = "<group>";
@@ -117,6 +121,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				598666671BCCC3DE005E7FD3 /* flushChromeHosts.applescript in Resources */,
 				59C270C61BC66961009C3B13 /* Assets.xcassets in Resources */,
 				59C270C91BC66961009C3B13 /* Main.storyboard in Resources */,
 			);
@@ -129,6 +134,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				598666661BCCB3D9005E7FD3 /* flushChromeHosts.applescript in Sources */,
 				59C270C41BC66961009C3B13 /* ViewController.swift in Sources */,
 				59C270C21BC66961009C3B13 /* AppDelegate.swift in Sources */,
 			);
@@ -235,6 +241,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Hosts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.viclm.Hosts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -247,6 +254,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Hosts/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.viclm.Hosts;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -271,6 +279,7 @@
 				59C270CF1BC66961009C3B13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
