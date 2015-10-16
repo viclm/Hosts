@@ -181,7 +181,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     @IBAction func addRuleToolbar(sender: NSToolbarItem) {
-        rules.append(rule(name: "New rule...", content: ""))
+        rules.append(rule(name: "New rule...", content: "", selected: true))
         saveRule()
         ruleListView.insertRowsAtIndexes(NSIndexSet(index: rules.count - 1), withAnimation: NSTableViewAnimationOptions.EffectNone)
         ruleListView.selectRowIndexes(NSIndexSet(index: rules.count - 1), byExtendingSelection: false)
@@ -200,19 +200,21 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         var hosts = originalHosts
         for r in rules {
             if r.selected {
-                hosts += "\n# Hosts Rule: \(r.name)\n\(r.content)"
+                hosts += "# Hosts Rule: \(r.name)\n\(r.content)\n"
             }
         }
-        var r = rules[0]
-        r.content = hosts
-        rules[0] = r
-        ruleListView.reloadData()
 
-        var script = "do shell script \"sudo echo '\(r.content)' | tee /etc/hosts\" with administrator privileges"
+        var script = "do shell script \"sudo echo '\(hosts)' | tee /etc/hosts\" with administrator privileges"
         var error: NSDictionary?
         if let scriptObj = NSAppleScript(source: script) {
             if let _: NSAppleEventDescriptor = scriptObj.executeAndReturnError(&error) {
                 print("/etc/hosts 写入成功")
+                var r = rules[0]
+                r.content = hosts
+                rules[0] = r
+                if ruleListView.selectedRow == 0 {
+                    showRule(0)
+                }
                 do {
                     script = try String(contentsOfFile: NSBundle.mainBundle().pathForResource("flushChromeHosts", ofType: "applescript")!, encoding: NSUTF8StringEncoding)
                 } catch {}
