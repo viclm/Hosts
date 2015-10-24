@@ -12,9 +12,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     @IBOutlet weak var ruleListView: NSTableView!
     @IBOutlet var ruleContentView: NSTextView!
-    
-    //let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(-1)
-    
+
     let dataDir = NSHomeDirectory() + "/.hosts"
     let ruleFile = "rules.json"
     
@@ -88,12 +86,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         ruleListView.setDelegate(self)
         ruleListView.setDataSource(self)
         ruleContentView.delegate = self
-
-        //let icon = NSImage(named: "AppIcon")
-        //icon!.size = NSSize(width: 22, height: 22)
-        //statusItem.image = icon
-        //statusItem.button!.action = "openWindow"
-        
     }
 
     override var representedObject: AnyObject? {
