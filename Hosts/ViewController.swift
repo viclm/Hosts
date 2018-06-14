@@ -8,228 +8,196 @@
 
 import Cocoa
 
-class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSTextViewDelegate {
+class ViewController: NSViewController {
+  
+  @IBOutlet weak var ruleListView: NSTableView!
+  @IBOutlet var ruleContentView: NSTextView!
+  
+  var originalHosts = ""
+  
+  var rules = Rules()
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    // Do any additional setup after loading the view.
+    guard let hosts = readSystemHosts() else {
+      let alert = NSAlert()
+      alert.messageText = "Oops, something went to wrong!"
+      alert.informativeText = "Try to reload later."
+      alert.alertStyle = .warning
+      alert.addButton(withTitle: "Ok")
+      alert.runModal()
+      return
+    }
+    
+    originalHosts = hosts.original
+    rules.set(0, Rule(name: "/etc/hosts", content: hosts.current, editable: false, selected: false))
+    
+    ruleListView.delegate = self
+    ruleListView.dataSource = self
+    ruleContentView.delegate = self
+    
+    display(0)
+  }
+  
+  fileprivate func readSystemHosts() -> (current: String, original: String)? {
+    do {
+      let currentHosts = try String(contentsOfFile: "/etc/hosts", encoding: String.Encoding.utf8)
+      let rtrim = try NSRegularExpression(pattern: "#\\sHosts\\sRule:\\s.*", options: NSRegularExpression.Options.dotMatchesLineSeparators)
+      originalHosts = rtrim.stringByReplacingMatches(in: currentHosts, options: [], range: NSMakeRange(0, (currentHosts as NSString).length), withTemplate: "")
+      return (currentHosts, originalHosts)
+    } catch {
+      return nil
+    }
+  }
+  
+  func display(_ index: Int) {
+    guard let r = rules.index(index) else {
+      return
+    }
+    ruleContentView.string = r.content
+    ruleContentView.isEditable = r.editable
+  }
+  
+}
 
-    @IBOutlet weak var ruleListView: NSTableView!
-    @IBOutlet var ruleContentView: NSTextView!
+extension ViewController: NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate {
+  
+  func numberOfRows(in tableView: NSTableView) -> Int {
+    return rules.count;
+  }
+  
+  func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    let cell = tableView.makeView(withIdentifier: tableColumn!.identifier, owner: self) as! NSTableCellView
+    guard let r = rules.index(row) else {
+      return nil
+    }
+    
+    cell.textField!.stringValue = r.name
+    cell.textField!.delegate = self
+    if r.editable {
+      cell.textField!.isEditable = true
+      let checkbox = NSButton(frame: NSRect(x: 130, y: -1, width: 20, height: 20))
+      checkbox.tag = row
+      checkbox.setButtonType(NSButton.ButtonType.switch)
+      checkbox.action = #selector(ViewController.select(_:))
+      if r.selected {
+        checkbox.state = NSControl.StateValue.on
+      }
+      cell.addSubview(checkbox)
+    }
+    return cell
+  }
+  
+  func tableViewSelectionDidChange(_ notification: Notification) {
+    let table = notification.object!
+    if (table as AnyObject).selectedRow > -1 {
+      display((table as AnyObject).selectedRow)
+    }
+  }
+  
+  func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+    let textField = control as! NSTextField
+    guard var r = rules.index(ruleListView.selectedRow) else {
+      return false
+    }
+    r.name = textField.stringValue
+    rules.set(ruleListView.selectedRow, r)
+    return true
+  }
+  
+  @objc func select(_ sender: NSButton) {
+    guard var r = rules.index(sender.tag) else {
+      return
+    }
+    r.selected = sender.state == NSControl.StateValue.on
+    rules.set(sender.tag, r)
+  }
+  
+}
 
-    let dataDir = NSHomeDirectory() + "/.hosts"
-    let ruleFile = "rules.json"
-    
-    var originalHosts = ""
-    
-    struct rule {
-        var name: String
-        var content: String
-        var editable: Bool
-        var selected: Bool
-        init(name: String, content: String, editable: Bool = true, selected: Bool = false) {
-            self.name = name
-            self.content = content
-            self.editable = editable
-            self.selected = selected
-        }
-        init?(json: AnyObject) {
-            guard let name = json["name"] as? String, let content = json["content"] as? String, let editable = json["editable"] as? Bool, let selected = json["selected"] as? Bool
-            else { return nil }
-            self.name = name
-            self.content = content
-            self.editable = editable
-            self.selected = selected
-        }
-        func toJSON() -> NSDictionary {
-            var tmp = [String: AnyObject]()
-            tmp["name"] = self.name
-            tmp["content"] = self.content
-            tmp["editable"] = self.editable
-            tmp["selected"] = self.selected
-            return tmp
-        }
+extension ViewController: NSTextViewDelegate {
+  
+  func textDidChange(_ notification: Notification) {
+    let textView = notification.object!
+    guard var r = rules.index(ruleListView.selectedRow) else {
+      return
     }
+    r.content = (textView as AnyObject).string
+    rules.set(ruleListView.selectedRow, r)
+  }
+  
+}
 
-    var rules = [rule]()
+extension ViewController: NSUserNotificationCenterDelegate {
+  
+  func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
+    return true
+  }
+  
+  func notify(_ message: String) {
+    let userNotification = NSUserNotification()
+    userNotification.title = "Hosts"
+    userNotification.informativeText = message
     
+    NSUserNotificationCenter.default.delegate = self
+    NSUserNotificationCenter.default.scheduleNotification(userNotification)
+  }
+  
+  func runAppleScript(_ source: String) -> Bool {
+    let script = "do shell script \"\(source)\" with administrator privileges"
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        do {
-            let manager = NSFileManager.defaultManager()
-            try manager.createDirectoryAtPath(dataDir, withIntermediateDirectories: true, attributes: nil)
-        
-            if manager.fileExistsAtPath(dataDir + "/" + ruleFile) {
-                let hostsData = try String(contentsOfFile: dataDir + "/" + ruleFile, encoding: NSUTF8StringEncoding)
-                let json = try NSJSONSerialization.JSONObjectWithData(hostsData.dataUsingEncoding(NSUTF8StringEncoding)!, options: [])
-                for j in json as! NSArray {
-                    rules.append(rule(json: j)!)
-                }
-                if rules.count > 0 && rules[0].name == "/etc/hosts" {
-                    rules.removeAtIndex(0)
-                }
-            }
-        } catch {
-            print("规则数据读取失败")
-        }
-
-        do {
-            let currentHosts = try String(contentsOfFile: "/etc/hosts", encoding: NSUTF8StringEncoding)
-            let rtrim = try NSRegularExpression(pattern: "#\\sHosts\\sRule:\\s.*", options: NSRegularExpressionOptions.DotMatchesLineSeparators)
-            originalHosts = rtrim.stringByReplacingMatchesInString(currentHosts, options: [], range: NSMakeRange(0, (currentHosts as NSString).length), withTemplate: "")
-            rules.insert(rule(name: "/etc/hosts", content: currentHosts, editable: false), atIndex: 0)
-            saveRule()
-            showRule(0)
-        } catch {
-            print("系统Hosts读取失败")
-        }
-        
-        ruleListView.setDelegate(self)
-        ruleListView.setDataSource(self)
-        ruleContentView.delegate = self
-    }
-
-    override var representedObject: AnyObject? {
-        didSet {
-        // Update the view, if already loaded.
-        }
+    guard let scriptObject = NSAppleScript(source: script) else {
+      return false
     }
     
-
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let cell = tableView.makeViewWithIdentifier(tableColumn!.identifier, owner: self) as! NSTableCellView
-        let r = rules[row]
-        cell.textField!.stringValue = r.name
-        cell.textField!.delegate = self
-        if r.editable {
-            if r.name == "/etc/hosts" {
-                print(r)
-            }
-            cell.textField!.editable = true
-            let checkbox = NSButton(frame: NSRect(x: 130, y: -1, width: 20, height: 20))
-            checkbox.tag = row
-            checkbox.setButtonType(NSButtonType.SwitchButton)
-            checkbox.action = "selectRule:"
-            if r.selected {
-                checkbox.state = 1
-            }
-            cell.addSubview(checkbox)
-        }
-        return cell
+    var scriptError: NSDictionary?
+    scriptObject.executeAndReturnError(&scriptError)
+  
+    return scriptError == nil
+  }
+  
+  @IBAction func addRuleToolbar(_ sender: NSToolbarItem) {
+    rules.add(Rule(name: "New rule..."))
+    ruleListView.insertRows(at: IndexSet(integer: rules.count - 1), withAnimation: NSTableView.AnimationOptions())
+    ruleListView.selectRowIndexes(IndexSet(integer: rules.count - 1), byExtendingSelection: false)
+  }
+  
+  @IBAction func removeRuleToolbar(_ sender: NSToolbarItem) {
+    if ruleListView.selectedRow > 0 {
+      rules.delete(ruleListView.selectedRow)
+      ruleListView.removeRows(at: ruleListView.selectedRowIndexes, withAnimation: NSTableView.AnimationOptions())
+      ruleListView.selectRowIndexes(IndexSet(integer: rules.count - 1), byExtendingSelection: false)
+    }
+  }
+  
+  @IBAction func saveRuleToolbar(_ sender: NSToolbarItem) {
+    var hosts = originalHosts
+    
+    for r in rules.list {
+      if r.selected {
+        hosts += "# Hosts Rule: \(r.name)\n\(r.content)\n"
+      }
     }
     
-    func tableViewSelectionDidChange(notification: NSNotification) {
-        let table = notification.object!
-        if table.selectedRow > -1 {
-            showRule(table.selectedRow)
-        }
+    let result = runAppleScript("sudo echo '\(hosts)' | tee /etc/hosts; sudo killall -HUP mDNSResponder; sudo killall mDNSResponderHelper; sudo dscacheutil -flushcache")
+    
+    if result {
+      guard var r = rules.index(0) else {
+        return
+      }
+      r.content = hosts
+      rules.set(0, r)
+      if ruleListView.selectedRow == 0 {
+        display(0)
+      }
+      notify("Success to apply rules")
+    }
+    else {
+      notify("Fail to apply rules")
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-        return rules.count;
-    }
-    
-    func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-        let textField = control as! NSTextField
-        var r = rules[ruleListView.selectedRow]
-        r.name = textField.stringValue
-        rules[ruleListView.selectedRow] = r
-        saveRule()
-        return true
-    }
-    
-    func textDidChange(notification: NSNotification) {
-        let textView = notification.object!
-        let index = ruleListView.selectedRow
-        if index > 0 {
-            var r = rules[index]
-            r.content = textView.string
-            rules[index] = r
-            saveRule()
-        }
-    }
-    
-    func showRule(index: Int) {
-        ruleContentView.string = rules[index].content
-        ruleContentView.editable = rules[index].editable
-    }
-    
-    func selectRule(sender: NSButton) {
-        rules[sender.tag].selected = sender.state == 1
-        saveRule()
-    }
-    
-    func saveRule() {
-        do {
-            var json = [AnyObject]()
-            for r in rules {
-                json.append(r.toJSON())
-            }
-            let jsonstr = try NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions.PrettyPrinted)
-            try String(data: jsonstr, encoding: NSUTF8StringEncoding)!.writeToFile(dataDir + "/" + ruleFile, atomically: false, encoding: NSUTF8StringEncoding)
-        }
-        catch {
-            print("规则写入文件失败")
-        }
-    }
-    
-    @IBAction func addRuleToolbar(sender: NSToolbarItem) {
-        rules.append(rule(name: "New rule...", content: "", selected: true))
-        saveRule()
-        ruleListView.insertRowsAtIndexes(NSIndexSet(index: rules.count - 1), withAnimation: NSTableViewAnimationOptions.EffectNone)
-        ruleListView.selectRowIndexes(NSIndexSet(index: rules.count - 1), byExtendingSelection: false)
-    }
-    
-    @IBAction func removeRuleToolbar(sender: NSToolbarItem) {
-        if ruleListView.selectedRow > 0 {
-            rules.removeAtIndex(ruleListView.selectedRow)
-            saveRule()
-            ruleListView.removeRowsAtIndexes(ruleListView.selectedRowIndexes, withAnimation: NSTableViewAnimationOptions.EffectNone)
-            ruleListView.selectRowIndexes(NSIndexSet(index: rules.count - 1), byExtendingSelection: false)
-        }
-    }
-    
-    @IBAction func saveRuleToolbar(sender: NSToolbarItem) {
-        var hosts = originalHosts
-        for r in rules {
-            if r.selected {
-                hosts += "# Hosts Rule: \(r.name)\n\(r.content)\n"
-            }
-        }
-
-        var script = "do shell script \"sudo echo '\(hosts)' | tee /etc/hosts\" with administrator privileges"
-        var error: NSDictionary?
-        if let scriptObj = NSAppleScript(source: script) {
-            if let _: NSAppleEventDescriptor = scriptObj.executeAndReturnError(&error) {
-                print("/etc/hosts 写入成功")
-                var r = rules[0]
-                r.content = hosts
-                rules[0] = r
-                if ruleListView.selectedRow == 0 {
-                    showRule(0)
-                }
-                do {
-                    script = try String(contentsOfFile: NSBundle.mainBundle().pathForResource("flushChromeHosts", ofType: "applescript")!, encoding: NSUTF8StringEncoding)
-                } catch {}
-                
-                if let script = NSAppleScript(source: script) {
-                    if let _: NSAppleEventDescriptor = script.executeAndReturnError(&error) {
-                        print("Chrome sockets 刷新成功")
-                    }
-                    else if (error != nil) {
-                        print("Chrome sockets 刷新失败")
-                    }
-                }
-                else {
-                    print("applescript 脚本加载失败")
-                }
-            }
-            else if (error != nil) {
-                print("/etc/hosts 写入失败")
-            }
-        }
-        else {
-            print("applescript 脚本加载失败")
-        }
-    }
-
+  }
+  
 }
