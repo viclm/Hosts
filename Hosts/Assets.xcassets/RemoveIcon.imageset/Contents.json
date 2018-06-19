@@ -1,19 +1,13 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
-      "filename" : "removeIcon_24x24.png",
+      "idiom" : "mac",
       "scale" : "1x"
     },
     {
-      "idiom" : "universal",
-      "filename" : "removeIcon_48x48.png",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
+      "idiom" : "mac",
       "filename" : "removeIcon_72x72.png",
-      "scale" : "3x"
+      "scale" : "2x"
     }
   ],
   "info" : {

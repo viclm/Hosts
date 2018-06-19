@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14269.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -332,19 +332,19 @@
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <value key="minSize" type="size" width="650" height="540"/>
                         <value key="maxSize" type="size" width="650" height="540"/>
-                        <toolbar key="toolbar" implicitIdentifier="7D28E3F5-EE8B-4151-88FA-C12941AF5728" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="Vbi-5V-e7X">
+                        <toolbar key="toolbar" implicitIdentifier="7D28E3F5-EE8B-4151-88FA-C12941AF5728" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="small" id="Vbi-5V-e7X">
                             <allowedToolbarItems>
-                                <toolbarItem implicitItemIdentifier="637E1857-6030-4830-8671-83411EFFA2DC" label="New Rule" paletteLabel="add" tag="-1" image="AddIcon" id="cKY-gg-vED">
+                                <toolbarItem implicitItemIdentifier="F3F60CD4-24A4-43EB-A078-2EAA0B4F17AF" label="New Rule" paletteLabel="add" tag="-1" image="AddIcon" id="cKY-gg-vED">
                                     <connections>
                                         <action selector="addRuleToolbar:" target="Oky-zY-oP4" id="OJM-la-YJn"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="1E7127ED-999A-44A8-8027-DCB207D0DC5F" label="Delete Rule" paletteLabel="delete" tag="-1" image="RemoveIcon" id="dsF-yv-98d">
+                                <toolbarItem implicitItemIdentifier="311A90BB-A1FB-45A0-A5F3-439F2D5AAB77" label="Delete Rule" paletteLabel="delete" tag="-1" image="RemoveIcon" id="dsF-yv-98d">
                                     <connections>
                                         <action selector="removeRuleToolbar:" target="Oky-zY-oP4" id="56A-45-yuI"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="A68038EB-5387-4B99-AD35-65B45B2CAE2C" label="Apply Rule" paletteLabel="apply" tag="-1" image="ApplyIcon" id="9Z9-ys-wwR">
+                                <toolbarItem implicitItemIdentifier="E1A519F6-51E5-4C5A-8AF9-6BB0A368AADE" label="Apply Rule" paletteLabel="apply" tag="-1" image="ApplyIcon" id="9Z9-ys-wwR">
                                     <connections>
                                         <action selector="saveRuleToolbar:" target="Oky-zY-oP4" id="A2G-5e-xR8"/>
                                     </connections>
@@ -377,24 +377,24 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="uCp-R9-4B1">
-                                <rect key="frame" x="0.0" y="13" width="650" height="9"/>
+                                <rect key="frame" x="0.0" y="13" width="650" height="5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             </box>
                             <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lKK-zZ-T9Q">
-                                <rect key="frame" x="0.0" y="20" width="150" height="520"/>
+                                <rect key="frame" x="0.0" y="15" width="150" height="526"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" copiesOnScroll="NO" id="I0u-J5-5Wn">
-                                    <rect key="frame" x="0.0" y="0.0" width="150" height="520"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="150" height="526"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" id="PRO-SE-gTK">
-                                            <rect key="frame" x="0.0" y="0.0" width="150" height="520"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="526"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlHighlightColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn width="147" minWidth="40" maxWidth="1000" id="YXT-7I-jOk">
+                                                <tableColumn identifier="" width="147" minWidth="40" maxWidth="1000" id="YXT-7I-jOk">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -441,18 +441,18 @@
                                 </scroller>
                             </scrollView>
                             <scrollView fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FIl-TZ-s6l">
-                                <rect key="frame" x="150" y="20" width="500" height="520"/>
+                                <rect key="frame" x="150" y="15" width="500" height="526"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="5j3-fw-ZKQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="485" height="520"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="485" height="526"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView ambiguous="YES" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="NgT-87-ZXk">
-                                            <rect key="frame" x="0.0" y="0.0" width="485" height="520"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="485" height="526"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="485" height="520"/>
+                                            <size key="minSize" width="485" height="526"/>
                                             <size key="maxSize" width="500" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         </textView>
@@ -463,7 +463,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="ful-yp-nll">
-                                    <rect key="frame" x="485" y="0.0" width="15" height="520"/>
+                                    <rect key="frame" x="485" y="0.0" width="15" height="526"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -480,8 +480,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="AddIcon" width="48" height="48"/>
-        <image name="ApplyIcon" width="48" height="48"/>
-        <image name="RemoveIcon" width="48" height="48"/>
+        <image name="AddIcon" width="72" height="72"/>
+        <image name="ApplyIcon" width="72" height="72"/>
+        <image name="RemoveIcon" width="72" height="72"/>
     </resources>
 </document>
