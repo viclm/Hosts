@@ -37,7 +37,7 @@ class ViewController: NSViewController {
     ruleListView.delegate = self
     ruleListView.dataSource = self
     ruleContentView.delegate = self
-    
+
     display(0)
   }
   
@@ -142,7 +142,7 @@ extension ViewController: NSUserNotificationCenterDelegate {
     userNotification.informativeText = message
     
     NSUserNotificationCenter.default.delegate = self
-    NSUserNotificationCenter.default.scheduleNotification(userNotification)
+    NSUserNotificationCenter.default.deliver(userNotification)
   }
   
   func runAppleScript(_ source: String) -> Bool {

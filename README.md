@@ -1,5 +1,5 @@
-Hosts switcher for OSX.
+Hosts switcher for MacOS.
 
-**Download link:** http://pan.baidu.com/s/1dpA2a
+**Download link:** https://pan.baidu.com/s/1XlOyLuD7tsJnSZ0wb8Z4zw jpzu
 
-![screenshot](https://cloud.githubusercontent.com/assets/449103/11863457/f4f5c2c0-a4ce-11e5-82ae-bdb4508e98e7.png)
+![screenshot](https://raw.githubusercontent.com/viclm/Hosts/master/Hosts.jpg)
